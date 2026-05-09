@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leafly — Watch</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest: #1c3220;
+    --forest-mid: #2d4a2f;
+    --forest-light: #4a7a4e;
+    --sage: #8aad8a;
+    --sage-pale: #c2d9c2;
+    --cream: #f6f1e7;
+    --cream-warm: #ede5d0;
+    --parchment: #d9cdb0;
+    --amber: #c4902a;
+    --amber-light: #e8b84b;
+    --ink: #1a1a17;
+    --ink-mid: #3a3a35;
+    --ink-muted: #6b6b62;
+    --ink-faint: #9b9b90;
+    --white: #ffffff;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --nav-h: 68px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    background: var(--cream);
+    border-bottom: 1px solid var(--parchment);
+    display: flex; align-items: center;
+    padding: 0 40px;
+    gap: 40px;
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--forest);
+    letter-spacing: -0.3px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .nav-logo svg { width: 22px; height: 22px; }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 0;
+    list-style: none;
+    flex: 1;
+  }
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .nav-links a:hover { color: var(--forest); background: var(--cream-warm); }
+  .nav-links a.active { color: var(--forest); font-weight: 500; }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .btn-ghost {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    background: none;
+    border: 1px solid var(--parchment);
+    border-radius: 6px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--sage); color: var(--forest); }
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+    background: var(--forest);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--forest-mid); }
+
+  /* ── HERO ── */
+  .hero {
+    margin-top: var(--nav-h);
+    padding: 64px 40px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: calc(var(--nav-h));
+    padding-top: 56px;
+  }
+
+  .hero-text {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(38px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--forest);
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--forest-light);
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+    max-width: 420px;
+    margin-bottom: 32px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 32px;
+    border-top: 1px solid var(--parchment);
+    padding-top: 28px;
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--forest);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  .hero-featured {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--forest);
+    aspect-ratio: 16/10;
+    cursor: pointer;
+  }
+
+  .hero-thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+    transition: opacity 0.4s;
+  }
+  .hero-featured:hover .hero-thumb { opacity: 0.85; }
+
+  .hero-video-bg {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--forest) 0%, #2d5a30 50%, #1a3a2a 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .leaf-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 C20 5 10 15 10 30 C10 45 20 55 30 55 C30 55 30 30 30 5Z' fill='white'/%3E%3Cpath d='M30 5 C40 5 50 15 50 30 C50 45 40 55 30 55 C30 55 30 30 30 5Z' fill='white' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 40px 40px;
+  }
+
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(28,50,32,0.95) 0%, rgba(28,50,32,0.3) 60%, transparent 100%);
+  }
+
+  .play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s, transform 0.25s;
+    backdrop-filter: blur(4px);
+  }
+  .hero-featured:hover .play-btn {
+    background: rgba(255,255,255,0.28);
+    transform: translate(-50%, -60%) scale(1.08);
+  }
+  .play-btn svg { width: 20px; height: 20px; margin-left: 3px; }
+
+  .hero-video-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 24px 28px;
+  }
+  .video-series-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--amber-light);
+    background: rgba(196,144,42,0.18);
+    border: 1px solid rgba(196,144,42,0.35);
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+  .hero-video-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .hero-video-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    display: flex; gap: 14px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* ── SERIES FILTER ── */
+  .series-filter {
+    display: flex; align-items: center; gap: 0;
+    border-bottom: 1px solid var(--parchment);
+    margin: 56px 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .series-filter::-webkit-scrollbar { display: none; }
+
+  .filter-tab {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 14px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .filter-tab:hover { color: var(--forest); }
+  .filter-tab.active {
+    color: var(--forest);
+    font-weight: 500;
+    border-bottom-color: var(--forest);
+  }
+
+  /* ── SERIES SECTION ── */
+  .series-section { margin-top: 48px; }
+
+  .section-header {
+    display: flex; align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .section-title-wrap {}
+  .section-num {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--amber);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--forest);
+    letter-spacing: -0.3px;
+  }
+  .section-title em {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .see-all {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--forest-light);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 4px;
+    border-bottom: 1px solid var(--sage-pale);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .see-all:hover { color: var(--forest); border-color: var(--sage); }
+
+  /* ── VIDEO GRID ── */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .video-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+
+  .video-card {
+    cursor: pointer;
+    transition: transform 0.25s;
+  }
+  .video-card:hover { transform: translateY(-3px); }
+
+  .video-thumb {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: var(--forest);
+    margin-bottom: 12px;
+  }
+
+  .thumb-bg {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Series color themes */
+  .s1 .thumb-bg { background: linear-gradient(135deg, #1e3a1e, #2d5a30); }
+  .s2 .thumb-bg { background: linear-gradient(135deg, #2a1e3a, #4a2d5a); }
+  .s3 .thumb-bg { background: linear-gradient(135deg, #1e2e3a, #2d4a5a); }
+  .s4 .thumb-bg { background: linear-gradient(135deg, #3a2a1e, #5a4a2d); }
+
+  .thumb-icon {
+    opacity: 0.15;
+    font-size: 48px;
+  }
+
+  .thumb-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .video-card:hover .thumb-overlay { opacity: 1; }
+
+  .thumb-play {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .thumb-play svg { width: 14px; height: 14px; margin-left: 2px; }
+
+  .thumb-duration {
+    position: absolute; bottom: 8px; right: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .thumb-ep {
+    position: absolute; top: 10px; left: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    padding: 3px 8px;
+    backdrop-filter: blur(4px);
+  }
+
+  .video-info {}
+  .video-title {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 6px;
+    letter-spacing: -0.1px;
+  }
+  .video-desc {
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .video-meta {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .video-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--parchment); }
+
+  /* ── EXPERT STRIP ── */
+  .expert-strip {
+    margin-top: 64px;
+    background: var(--forest);
+    border-radius: 16px;
+    padding: 48px 52px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .expert-label {
+    font-family: var(--serif);
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+  }
+  .expert-label strong {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--amber-light);
+  }
+
+  .expert-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .expert-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .expert-card:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .expert-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--forest-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .expert-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 3px;
+  }
+  .expert-role {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .expert-topic {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--amber-light);
+    opacity: 0.85;
+  }
+
+  /* ── TOOLS SECTION ── */
+  .tools-strip {
+    margin-top: 64px;
+    padding: 40px 44px;
+    background: var(--cream-warm);
+    border-radius: 16px;
+    border: 1px solid var(--parchment);
+  }
+
+  .tools-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .tools-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--forest);
+  }
+  .tools-subtitle {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .tool-card {
+    background: var(--cream);
+    border: 1px solid var(--parchment);
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tool-card:hover {
+    border-color: var(--sage);
+    transform: translateY(-2px);
+  }
+
+  .tool-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--forest);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+
+  .tool-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .tool-type {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.3px;
+    margin-bottom: 10px;
+  }
+  .tool-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--forest);
+    background: var(--sage-pale);
+    border-radius: 4px;
+    padding: 3px 8px;
+    letter-spacing: 0.3px;
+  }
+  .tool-badge.coming { color: var(--amber); background: rgba(196,144,42,0.12); }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    margin-top: 64px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 40px 0;
+    border-top: 1px solid var(--parchment);
+    border-bottom: 1px solid var(--parchment);
+  }
+
+  .newsletter-text {}
+  .newsletter-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--forest);
+    margin-bottom: 6px;
+  }
+  .newsletter-sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .newsletter-form {
+    display: flex; gap: 10px;
+    flex-shrink: 0;
+  }
+  .newsletter-input {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--white);
+    border: 1px solid var(--parchment);
+    border-radius: 6px;
+    padding: 10px 16px;
+    width: 240px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .newsletter-input:focus { border-color: var(--sage); }
+  .newsletter-input::placeholder { color: var(--ink-faint); }
+
+  /* ── FOOTER ── */
+  footer {
+    max-width: 1280px;
+    margin: 48px auto 0;
+    padding: 0 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--forest);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .footer-links {
+    display: flex; gap: 24px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--forest); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-text { animation: fadeUp 0.7s ease forwards; }
+  .hero-featured { animation: fadeUp 0.7s 0.15s ease both; }
+  .series-section { animation: fadeUp 0.5s 0.2s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; gap: 20px; }
+    .hero { grid-template-columns: 1fr; padding: 32px 20px 0; gap: 24px; }
+    main { padding: 0 20px 60px; }
+    .video-grid { grid-template-columns: repeat(2, 1fr); }
+    .expert-strip { grid-template-columns: 1fr; }
+    .expert-cards { grid-template-columns: repeat(2, 1fr); }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 0 20px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C7 2 3 7 3 12C3 17 7 22 12 22C12 22 12 12 12 2Z" fill="#1c3220"/>
+      <path d="M12 2C17 2 21 7 21 12C21 17 17 22 12 22C12 22 12 12 12 2Z" fill="#4a7a4e"/>
+    </svg>
+    Leafly
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">App</a></li>
+    <li><a href="#" class="active">Watch</a></li>
+    <li><a href="#">Tools</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost">Sign in</button>
+    <button class="btn-primary">Try Leafly</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-eyebrow">Leafly Watch</span>
+    <h1 class="hero-title">
+      The art & science<br>
+      of <em>thinking on paper</em>
+    </h1>
+    <p class="hero-desc">
+      From psychology labs to paper notebooks — explore how the way we capture thoughts shapes the way we think. Video series, expert interviews, and behind-the-scenes looks at how Leafly is built.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">24</div>
+        <div class="stat-label">Episodes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Series</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">11</div>
+        <div class="stat-label">Expert guests</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-featured">
+    <div class="hero-video-bg">
+      <div class="leaf-pattern"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="play-btn">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg>
+    </div>
+    <div class="hero-video-info">
+      <span class="video-series-tag">Series 3 — The Science</span>
+      <div class="hero-video-title">Why your brain loves a list:<br>The cognitive case for note-taking</div>
+      <div class="hero-video-meta">
+        <span>Dr. Emma Clarke, UCL</span>
+        <span class="dot"></span>
+        <span>28 min</span>
+        <span class="dot"></span>
+        <span>Episode 1</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main>
+
+  <!-- SERIES FILTER -->
+  <div class="series-filter">
+    <button class="filter-tab active">All series</button>
+    <button class="filter-tab">From Paper to Pixel</button>
+    <button class="filter-tab">Building Leafly</button>
+    <button class="filter-tab">Why Lists Work</button>
+    <button class="filter-tab">The Hardware Layer</button>
+    <button class="filter-tab">Expert interviews</button>
+  </div>
+
+  <!-- SERIES 1: FROM PAPER TO PIXEL -->
+  <section class="series-section">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-num">Series 01</span>
+        <h2 class="section-title">From Paper <em>to Pixel</em></h2>
+      </div>
+      <a href="#" class="see-all">See all episodes →</a>
+    </div>
+    <div class="video-grid">
+      <div class="video-card s1">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 01</span>
+          <span class="thumb-duration">18 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Weekly planning: board vs. app</div>
+          <div class="video-desc">Side-by-side comparison of a physical vision board weekly layout and the Leafly equivalent.</div>
+          <div class="video-meta"><span>18 min</span><span class="dot"></span><span>Mar 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s1">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 02</span>
+          <span class="thumb-duration">22 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Goal setting rituals, old and new</div>
+          <div class="video-desc">How annual goal-setting shifts when you move from a cork board to a digital canvas.</div>
+          <div class="video-meta"><span>22 min</span><span class="dot"></span><span>Mar 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s1">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 03</span>
+          <span class="thumb-duration">15 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Mood boarding without scissors</div>
+          <div class="video-desc">Replicating the tactile joy of mood boards inside a digital tool — what survives the translation.</div>
+          <div class="video-meta"><span>15 min</span><span class="dot"></span><span>Apr 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s1">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 04</span>
+          <span class="thumb-duration">20 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Project tracking across both worlds</div>
+          <div class="video-desc">When sticky notes meet structured data — a hybrid workflow that uses both.</div>
+          <div class="video-meta"><span>20 min</span><span class="dot"></span><span>Apr 2025</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERIES 2: BUILDING LEAFLY -->
+  <section class="series-section">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-num">Series 02</span>
+        <h2 class="section-title">Building <em>Leafly</em></h2>
+      </div>
+      <a href="#" class="see-all">See all episodes →</a>
+    </div>
+    <div class="video-grid">
+      <div class="video-card s2">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 01</span>
+          <span class="thumb-duration">32 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Why we redesigned lists three times</div>
+          <div class="video-desc">The decisions, dead ends, and user testing sessions that shaped the core list UI.</div>
+          <div class="video-meta"><span>32 min</span><span class="dot"></span><span>Jan 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s2">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 02</span>
+          <span class="thumb-duration">24 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">The first user test: what we got wrong</div>
+          <div class="video-desc">Watching real people use v0.1 for the first time — unfiltered, instructive, humbling.</div>
+          <div class="video-meta"><span>24 min</span><span class="dot"></span><span>Feb 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s2">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 03</span>
+          <span class="thumb-duration">19 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Shipping v1.0 — the messy middle</div>
+          <div class="video-desc">Feature cuts, scope creep, and the decision to launch before we felt ready.</div>
+          <div class="video-meta"><span>19 min</span><span class="dot"></span><span>Feb 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s2">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 04</span>
+          <span class="thumb-duration">28 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Building the reMarkable bridge</div>
+          <div class="video-desc">Engineering a two-way sync between handwritten notes and a structured digital system.</div>
+          <div class="video-meta"><span>28 min</span><span class="dot"></span><span>Mar 2025</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERT STRIP -->
+  <div class="expert-strip">
+    <div class="expert-label">
+      In conversation<br>with <strong>the experts</strong><br>who study why<br>we write things down
+    </div>
+    <div class="expert-cards">
+      <div class="expert-card">
+        <div class="expert-avatar">EC</div>
+        <div class="expert-name">Dr. Emma Clarke</div>
+        <div class="expert-role">Cognitive Neuroscience, UCL</div>
+        <div class="expert-topic">"Externalising thought to free working memory"</div>
+      </div>
+      <div class="expert-card">
+        <div class="expert-avatar">JM</div>
+        <div class="expert-name">Prof. James Morrow</div>
+        <div class="expert-role">Behavioural Psychology, Edinburgh</div>
+        <div class="expert-topic">"The completion effect and why crossing off matters"</div>
+      </div>
+      <div class="expert-card">
+        <div class="expert-avatar">SR</div>
+        <div class="expert-name">Dr. Sana Rashid</div>
+        <div class="expert-role">Clinical Psychology, anxiety & OCD</div>
+        <div class="expert-topic">"Lists as regulation tools, not just productivity"</div>
+      </div>
+      <div class="expert-card">
+        <div class="expert-avatar">PL</div>
+        <div class="expert-name">Pierre Leclerc</div>
+        <div class="expert-role">PKM researcher & author</div>
+        <div class="expert-topic">"PARA, Zettelkasten and what they share"</div>
+      </div>
+      <div class="expert-card">
+        <div class="expert-avatar">AK</div>
+        <div class="expert-name">Dr. Aisha Kamara</div>
+        <div class="expert-role">Occupational Therapy, King's College</div>
+        <div class="expert-topic">"Note-taking adaptations for ADHD and dyslexia"</div>
+      </div>
+      <div class="expert-card">
+        <div class="expert-avatar">TN</div>
+        <div class="expert-name">Tom Nakamura</div>
+        <div class="expert-role">UX researcher, former Google</div>
+        <div class="expert-topic">"What 10 years of note-app research taught me"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERIES 4: HARDWARE LAYER -->
+  <section class="series-section">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-num">Series 04</span>
+        <h2 class="section-title">The Hardware <em>Layer</em></h2>
+      </div>
+      <a href="#" class="see-all">See all episodes →</a>
+    </div>
+    <div class="video-grid three-col">
+      <div class="video-card s4">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 01</span>
+          <span class="thumb-duration">34 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">reMarkable 2 — the honest review</div>
+          <div class="video-desc">Two months of daily use. What it does brilliantly, where it falls short, and how Leafly fits in.</div>
+          <div class="video-meta"><span>34 min</span><span class="dot"></span><span>Apr 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s4">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 02</span>
+          <span class="thumb-duration">26 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Rocketbook and the scan-to-cloud workflow</div>
+          <div class="video-desc">Testing every smart notebook on the market — which ones actually stick to their promises.</div>
+          <div class="video-meta"><span>26 min</span><span class="dot"></span><span>Apr 2025</span></div>
+        </div>
+      </div>
+      <div class="video-card s4">
+        <div class="video-thumb">
+          <div class="thumb-bg"></div>
+          <div class="thumb-overlay"><div class="thumb-play"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5z"/></svg></div></div>
+          <span class="thumb-ep">Ep 03</span>
+          <span class="thumb-duration">22 min</span>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Designing the Leafly capture pad</div>
+          <div class="video-desc">What a physical notebook designed specifically for Leafly import could look like — and how we'd make it.</div>
+          <div class="video-meta"><span>22 min</span><span class="dot"></span><span>Coming soon</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS STRIP -->
+  <div class="tools-strip">
+    <div class="tools-header">
+      <div>
+        <div class="tools-title">Tools we cover</div>
+        <div class="tools-subtitle">Hardware and apps featured across the series</div>
+      </div>
+      <a href="#" class="see-all">Full comparison guide →</a>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">✦</div>
+        <div class="tool-name">reMarkable 2</div>
+        <div class="tool-type">E-ink writing tablet</div>
+        <span class="tool-badge">Integration live</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">◈</div>
+        <div class="tool-name">Rocketbook</div>
+        <div class="tool-type">Smart reusable notebook</div>
+        <span class="tool-badge">Integration live</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">◇</div>
+        <div class="tool-name">Supernote A5X</div>
+        <div class="tool-type">Digital notepad</div>
+        <span class="tool-badge coming">In testing</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">❋</div>
+        <div class="tool-name">Leafly Capture Pad</div>
+        <div class="tool-type">Co-designed notebook</div>
+        <span class="tool-badge coming">Coming 2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter">
+    <div class="newsletter-text">
+      <div class="newsletter-title">The Leafly dispatch</div>
+      <div class="newsletter-sub">New episodes, expert interviews, and research on the science of note-taking.<br>Weekly. No noise.</div>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="your@email.com">
+      <button class="btn-primary" style="padding: 10px 22px; font-size: 13px;">Subscribe</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2C7 2 3 7 3 12C3 17 7 22 12 22C12 22 12 12 12 2Z" fill="#1c3220"/><path d="M12 2C17 2 21 7 21 12C21 17 17 22 12 22C12 22 12 12 12 2Z" fill="#4a7a4e"/></svg>
+    Leafly
+  </div>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Press</a></li>
+    <li><a href="#">Careers</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Leafly</span>
+</footer>
+
+
+<!-- APP PANEL -->
+<div id="lf-app-panel" style="position:fixed;top:68px;left:0;right:0;bottom:0;z-index:90;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);background:#1e120a;">
+  <iframe id="lf-app-frame" style="width:100%;height:100%;border:none;display:block;" title="Leafly App"></iframe>
+</div>
+
+<script>
+(function(){
+  var appHTML = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\"/>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n  <title>TreeList</title>\n  <style>\n    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}\n    html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}\n\n    #app{display:flex;flex-direction:column;height:100vh;}\n\n    /* \u2500\u2500 Topbar \u2500\u2500 */\n    #topbar{\n      display:flex;align-items:center;gap:10px;padding:0 14px;\n      height:52px;min-height:52px;\n      background:#1e120a;border-bottom:2px solid #2d1a0d;\n    }\n    #menu-btn{background:none;border:none;color:rgba(255,255,255,.65);font-size:20px;cursor:pointer;padding:6px;border-radius:8px;line-height:1;}\n    #menu-btn:hover{background:rgba(255,255,255,.1);}\n    #topbar h1{flex:1;font-size:17px;font-weight:700;color:#f0dfc0;letter-spacing:.2px;}\n    #topbar-section-name{font-size:13px;color:#8a6a3a;font-weight:500;}\n\n    /* \u2500\u2500 Body \u2500\u2500 */\n    #body{display:flex;flex:1;overflow:hidden;}\n\n    /* \u2500\u2500 Sidebar \u2500\u2500 */\n    #sidebar{\n      width:200px;min-width:200px;background:#130c05;\n      display:flex;flex-direction:column;\n      border-right:1px solid #2a1608;\n      transition:width .22s ease,min-width .22s ease;overflow:hidden;\n    }\n    #sidebar.collapsed{width:0;min-width:0;}\n\n    #sidebar-hdr{\n      display:flex;align-items:center;justify-content:space-between;\n      padding:14px 12px 10px;border-bottom:1px solid #2a1608;flex-shrink:0;\n    }\n    #sidebar-hdr span{font-size:10px;color:#5a3a1a;text-transform:uppercase;letter-spacing:.1em;font-weight:700;}\n    #add-sec-btn{\n      width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.06);\n      border:none;color:#7a5030;font-size:19px;cursor:pointer;\n      display:flex;align-items:center;justify-content:center;line-height:1;\n    }\n    #add-sec-btn:hover{background:rgba(255,255,255,.13);color:#c8943a;}\n\n    #sec-list{flex:1;overflow-y:auto;padding:6px 8px 10px;}\n    #sec-list::-webkit-scrollbar{width:3px;}\n    #sec-list::-webkit-scrollbar-thumb{background:#2a1608;border-radius:2px;}\n\n    .sec-item{\n      display:flex;align-items:center;gap:8px;\n      padding:11px 8px;border-radius:10px;cursor:pointer;\n      margin-bottom:2px;transition:background .1s;\n    }\n    .sec-item:hover{background:rgba(255,255,255,.05);}\n    .sec-item.active{background:rgba(255,220,140,.1);}\n    .sec-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}\n    .sec-label{flex:1;font-size:13px;color:#8a7050;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}\n    .sec-item.active .sec-label{color:#f0dfc0;font-weight:600;}\n    .sec-count{font-size:10px;color:#4a3018;background:rgba(255,255,255,.05);padding:2px 6px;border-radius:10px;flex-shrink:0;}\n    .sec-item.active .sec-count{color:#9a7040;background:rgba(255,220,140,.1);}\n    .sec-acts{display:flex;gap:2px;flex-shrink:0;}\n    .sec-btn{background:none;border:none;color:#4a3018;font-size:13px;cursor:pointer;padding:3px 5px;border-radius:5px;line-height:1;}\n    .sec-btn:hover{color:#c8943a;background:rgba(255,255,255,.08);}\n    .sec-item:not(:hover) .sec-acts{display:none;}\n    .sec-inp{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#f0dfc0;padding:3px 8px;font-size:13px;font-family:inherit;outline:none;}\n\n    /* \u2500\u2500 Main \u2500\u2500 */\n    #main{flex:1;overflow-y:auto;overflow-x:hidden;background:#f4efe4;position:relative;}\n    #main::-webkit-scrollbar{width:4px;}\n    #main::-webkit-scrollbar-thumb{background:#c8b48a;border-radius:2px;}\n\n    /* \u2500\u2500 Empty \u2500\u2500 */\n    #empty-msg{\n      display:flex;flex-direction:column;align-items:center;justify-content:center;\n      height:100%;color:#b8a070;text-align:center;gap:14px;padding:40px;\n    }\n    #empty-msg .ico{font-size:58px;}\n    #empty-msg p{font-size:14px;line-height:1.7;color:#a09060;}\n\n    /* \u2500\u2500 Tree outer container \u2500\u2500 */\n    #tree-outer{position:relative;padding:0 0 80px;}\n\n    /* SVG behind everything \u2014 pointer-events on for trunk tap */\n    #tree-svg{position:absolute;top:0;left:0;z-index:1;}\n\n    /* Trunk tap hint */\n    #trunk-hint{\n      position:absolute;left:50%;transform:translateX(-50%);\n      font-size:10px;color:#c8a870;opacity:.7;\n      pointer-events:none;z-index:3;white-space:nowrap;\n      letter-spacing:.04em;\n    }\n\n    /* \u2500\u2500 Keyword editor panel \u2500\u2500 */\n    #kw-panel{\n      position:fixed;z-index:200;\n      background:#2a1608;border:1px solid #4a2e14;\n      border-radius:16px;padding:14px;\n      box-shadow:0 8px 32px rgba(0,0,0,.4);\n      width:220px;display:none;\n    }\n    #kw-panel h3{font-size:11px;color:#8a6030;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:10px;}\n    #kw-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;min-height:24px;}\n    .kw-chip{\n      display:flex;align-items:center;gap:4px;\n      background:#3d1e08;border:1px solid #6a3a18;\n      border-radius:20px;padding:4px 8px 4px 10px;\n      font-size:11px;color:#f0c880;font-weight:600;\n      letter-spacing:.03em;\n    }\n    .kw-chip-del{\n      background:none;border:none;color:#8a5030;\n      font-size:14px;cursor:pointer;line-height:1;padding:0 1px;\n    }\n    .kw-chip-del:hover{color:#e07040;}\n    #kw-inp-row{display:flex;gap:6px;}\n    #kw-inp{\n      flex:1;background:#1a0c04;border:1px solid #4a2e14;\n      border-radius:10px;padding:7px 10px;\n      font-size:12px;font-family:inherit;color:#f0dfc0;\n      outline:none;\n    }\n    #kw-inp:focus{border-color:#8b6030;}\n    #kw-inp::placeholder{color:#4a3018;}\n    #kw-add-btn{\n      padding:7px 11px;background:#5c3318;color:#f0dfc0;\n      border:none;border-radius:10px;font-size:13px;\n      cursor:pointer;font-family:inherit;font-weight:700;\n    }\n    #kw-add-btn:hover{background:#7a4a24;}\n    #kw-close{\n      display:block;width:100%;margin-top:10px;\n      padding:6px;background:transparent;\n      border:1px solid #3a2010;border-radius:10px;\n      color:#6a4828;font-size:11px;cursor:pointer;font-family:inherit;\n    }\n    #kw-close:hover{background:#1a0c04;color:#a07040;}\n\n    /* Tree section title */\n    #tree-title{\n      text-align:center;padding:20px 16px 14px;\n      position:relative;z-index:2;\n    }\n    #tree-title h2{font-size:20px;font-weight:800;color:#2c1a08;letter-spacing:.2px;}\n    #tree-title p{font-size:12px;color:#9a7850;margin-top:4px;}\n\n    /* \u2500\u2500 Leaf layout \u2500\u2500 */\n    #leaves-wrap{position:relative;z-index:2;padding:0 0 20px;}\n\n    .leaf-row{\n      display:flex;align-items:center;margin:10px 0;min-height:170px;\n    }\n    .leaf-slot{flex:1;padding:0;}\n    .leaf-slot.left{display:flex;justify-content:flex-end;}\n    .leaf-slot.right{display:flex;justify-content:flex-start;}\n    .leaf-slot.empty{pointer-events:none;}\n    .trunk-gap{width:48px;flex-shrink:0;}\n\n    /* \u2500\u2500 Leaf card \u2500\u2500 */\n    .leaf-card{\n      width:100%;max-width:200px;\n      background:white;border-radius:18px;\n      box-shadow:0 3px 14px rgba(0,0,0,.09);\n      overflow:hidden;\n      border:2px solid var(--lc,#27ae60);\n    }\n\n    .leaf-head{\n      display:flex;align-items:center;gap:7px;\n      padding:9px 10px;\n      background:var(--lc-light,#e8f5e9);\n      border-bottom:1px solid rgba(0,0,0,.06);\n    }\n    .leaf-head-icon{font-size:14px;flex-shrink:0;}\n    .leaf-head-title{\n      flex:1;font-size:12px;font-weight:700;\n      color:var(--lc-dark,#1b5e20);\n      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\n      cursor:pointer;\n    }\n    .leaf-head-count{\n      font-size:10px;background:white;\n      color:var(--lc,#27ae60);\n      padding:1px 6px;border-radius:10px;flex-shrink:0;font-weight:600;\n    }\n    .leaf-del-btn{\n      background:none;border:none;color:rgba(0,0,0,.2);\n      font-size:15px;cursor:pointer;padding:2px 3px;border-radius:5px;flex-shrink:0;line-height:1;\n    }\n    .leaf-del-btn:hover{color:#c0392b;background:rgba(192,57,43,.1);}\n\n    .leaf-pin-btn{\n      background:none;border:none;color:rgba(0,0,0,.18);\n      font-size:13px;cursor:pointer;padding:2px 4px;\n      border-radius:5px;flex-shrink:0;line-height:1;transition:all .12s;\n    }\n    .leaf-pin-btn:hover{color:#d4880a;background:rgba(212,136,10,.1);}\n    .leaf-pin-btn.pinned{color:#d4880a;}\n\n    .leaf-body{padding:7px 8px;}\n\n    .leaf-todo{\n      display:flex;align-items:flex-start;gap:7px;\n      padding:5px 3px;border-radius:8px;\n      min-height:36px;\n    }\n    .leaf-todo:hover{background:#f8f6f0;}\n\n    .leaf-chk{\n      width:20px;height:20px;border-radius:6px;\n      border:2px solid #d8d0c0;flex-shrink:0;margin-top:1px;\n      display:flex;align-items:center;justify-content:center;\n      cursor:pointer;transition:all .15s;\n    }\n    .leaf-chk.done{background:var(--lc,#27ae60);border-color:transparent;}\n    .leaf-chk.done::after{content:'\u2713';font-size:12px;font-weight:800;color:white;}\n\n    .leaf-todo-txt{\n      flex:1;font-size:12px;color:#2c2010;line-height:1.45;\n      word-break:break-word;min-width:0;\n    }\n    .leaf-todo-txt.done{text-decoration:line-through;color:#bfb090;}\n    .leaf-todo-txt-inp{\n      flex:1;border:none;outline:none;font-size:12px;\n      font-family:inherit;color:#2c2010;background:transparent;padding:0;width:100%;\n    }\n\n    .leaf-todo-del{\n      background:none;border:none;color:#e0d0b0;font-size:14px;\n      cursor:pointer;padding:2px 3px;border-radius:5px;\n      flex-shrink:0;opacity:0;transition:opacity .1s;line-height:1;\n    }\n    .leaf-todo:hover .leaf-todo-del{opacity:1;}\n    .leaf-todo-del:hover{color:#c0392b;background:#fff0ee;}\n\n    .leaf-add-row{\n      display:flex;gap:4px;padding:5px 3px;\n      border-top:1px solid #f0e8d8;margin-top:3px;\n    }\n    .leaf-add-inp{\n      flex:1;border:1px solid #e8dfc8;border-radius:8px;\n      padding:5px 8px;font-size:11px;font-family:inherit;\n      outline:none;background:#faf8f4;color:#2c2010;min-width:0;\n    }\n    .leaf-add-inp:focus{border-color:var(--lc,#27ae60);background:white;}\n    .leaf-add-inp::placeholder{color:#c0b080;}\n    .leaf-add-btn{\n      padding:5px 9px;background:var(--lc,#27ae60);color:white;\n      border:none;border-radius:8px;font-size:11px;cursor:pointer;\n      font-family:inherit;font-weight:700;flex-shrink:0;\n    }\n\n    /* \u2500\u2500 Ground / roots area \u2500\u2500 */\n    #tree-ground{\n      display:flex;justify-content:center;align-items:flex-end;\n      padding:0 0 10px;position:relative;z-index:2;height:50px;\n    }\n\n    /* \u2500\u2500 FAB \u2500\u2500 */\n    #add-leaf-btn{\n      position:fixed;right:16px;bottom:20px;\n      background:#3d6b2e;color:white;border:none;\n      padding:13px 18px;border-radius:50px;\n      font-size:14px;font-weight:700;cursor:pointer;\n      font-family:inherit;\n      box-shadow:0 4px 16px rgba(40,80,20,.35);\n      transition:all .15s;z-index:50;display:none;\n    }\n    #add-leaf-btn:hover{background:#2d5020;transform:translateY(-2px);}\n    #add-leaf-btn:active{transform:none;}\n\n    /* \u2500\u2500 Leaf name editor \u2500\u2500 */\n    .leaf-name-inp{\n      flex:1;border:none;background:transparent;outline:none;\n      font-size:12px;font-weight:700;font-family:inherit;\n      color:var(--lc-dark,#1b5e20);padding:0;min-width:0;\n    }\n\n    /* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n       VISION BOARD\n    \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */\n\n    /* Sidebar vision entry */\n    #vb-entry{\n      display:flex;align-items:center;gap:9px;\n      padding:12px 10px;margin:8px 8px 0;\n      border-radius:10px;cursor:pointer;\n      border:1px solid #2a1608;\n      background:rgba(255,220,100,.05);\n      transition:background .12s;flex-shrink:0;\n    }\n    #vb-entry:hover{background:rgba(255,220,100,.1);}\n    #vb-entry.active{background:rgba(255,220,100,.15);border-color:#5a3a10;}\n    #vb-entry-icon{font-size:16px;flex-shrink:0;}\n    #vb-entry-label{font-size:13px;color:#a08040;font-weight:600;flex:1;}\n    #vb-entry.active #vb-entry-label{color:#f0c860;}\n    #vb-entry-count{font-size:10px;color:#5a3a10;background:rgba(255,200,80,.1);padding:2px 7px;border-radius:10px;}\n    .sidebar-divider-line{height:1px;background:#1e1008;margin:8px 10px 4px;}\n\n    /* Vision board main area */\n    #vb-outer{\n      min-height:100%;background:#fdf8ee;\n      padding:0 0 100px;\n    }\n    #vb-header{\n      padding:20px 18px 16px;\n      border-bottom:1px solid #e8dfc8;\n      background:#fdf8ee;\n    }\n    #vb-header h2{font-size:20px;font-weight:800;color:#2c1a08;}\n    #vb-header p{font-size:12px;color:#9a7850;margin-top:3px;}\n\n    /* Keyword card grid */\n    #vb-grid{\n      display:grid;\n      grid-template-columns:1fr 1fr;\n      gap:12px;\n      padding:14px 12px;\n    }\n\n    .vb-card{\n      background:white;border-radius:16px;\n      border:2px solid var(--vc,#d4880a);\n      box-shadow:0 2px 10px rgba(0,0,0,.07);\n      overflow:hidden;display:flex;flex-direction:column;\n    }\n\n    .vb-card-head{\n      display:flex;align-items:center;gap:6px;\n      padding:10px 10px 9px;\n      background:var(--vc-light,#fff5e0);\n      border-bottom:1px solid rgba(0,0,0,.06);\n      flex-shrink:0;\n    }\n    .vb-card-icon{font-size:14px;flex-shrink:0;}\n    .vb-card-title{\n      flex:1;font-size:13px;font-weight:800;\n      color:var(--vc-dark,#7a4f00);\n      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\n      cursor:pointer;letter-spacing:.02em;text-transform:uppercase;\n    }\n    .vb-card-title-inp{\n      flex:1;border:none;background:transparent;outline:none;\n      font-size:13px;font-weight:800;font-family:inherit;\n      color:var(--vc-dark,#7a4f00);padding:0;min-width:0;\n      text-transform:uppercase;letter-spacing:.02em;\n    }\n    .vb-card-btn{\n      background:none;border:none;color:rgba(0,0,0,.22);\n      font-size:14px;cursor:pointer;padding:2px 4px;\n      border-radius:5px;line-height:1;flex-shrink:0;\n    }\n    .vb-card-btn:hover{color:var(--vc-dark,#7a4f00);background:rgba(0,0,0,.07);}\n    .vb-card-btn.danger:hover{color:#c0392b;background:rgba(192,57,43,.1);}\n\n    .vb-card-body{\n      flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:6px;\n    }\n\n    /* Content textarea */\n    .vb-content{\n      width:100%;min-height:60px;resize:none;border:none;\n      outline:none;font-size:12px;font-family:inherit;\n      color:#3a2810;line-height:1.6;background:transparent;\n      padding:0;\n    }\n    .vb-content::placeholder{color:#c8b88a;font-style:italic;}\n\n    /* Plant as tree button */\n    .vb-plant-btn{\n      display:flex;align-items:center;gap:5px;\n      padding:6px 10px;border-radius:10px;\n      background:var(--vc-light,#fff5e0);\n      border:1px solid var(--vc,#d4880a);\n      color:var(--vc-dark,#7a4f00);font-size:11px;\n      font-weight:700;cursor:pointer;font-family:inherit;\n      transition:all .12s;margin-top:2px;\n      justify-content:center;\n    }\n    .vb-plant-btn:hover{background:var(--vc,#d4880a);color:white;}\n\n    /* Add keyword FAB (vision mode) */\n    #add-kw-fab{\n      position:fixed;right:16px;bottom:20px;\n      background:#8a6010;color:#f5e0a0;border:none;\n      padding:13px 18px;border-radius:50px;\n      font-size:14px;font-weight:700;cursor:pointer;\n      font-family:inherit;\n      box-shadow:0 4px 16px rgba(100,60,0,.35);\n      transition:all .15s;z-index:50;display:none;\n    }\n    #add-kw-fab:hover{background:#6a4808;transform:translateY(-2px);}\n    #add-kw-fab:active{transform:none;}\n\n    /* VB empty state */\n    #vb-empty{\n      display:flex;flex-direction:column;align-items:center;\n      justify-content:center;padding:60px 30px;gap:12px;text-align:center;\n    }\n    #vb-empty .ico{font-size:52px;}\n    #vb-empty p{font-size:13px;color:#b09860;line-height:1.7;}\n\n    /* \u2500\u2500 Leaf rename button \u2500\u2500 */\n    .leaf-rename-btn{\n      background:none;border:none;color:rgba(0,0,0,.25);\n      font-size:12px;cursor:pointer;padding:2px 4px;\n      border-radius:5px;flex-shrink:0;line-height:1;\n      transition:color .1s,background .1s;\n    }\n    .leaf-rename-btn:hover{color:var(--lc-dark,#1b5e20);background:rgba(0,0,0,.07);}\n\n    /* \u2500\u2500 Todo drag handle \u2500\u2500 */\n    .leaf-drag-handle{\n      color:#d8ccb8;font-size:15px;cursor:grab;\n      padding:2px 2px;flex-shrink:0;line-height:1;\n      touch-action:none;user-select:none;\n    }\n    .leaf-drag-handle:active{cursor:grabbing;}\n    .leaf-todo:hover .leaf-drag-handle{color:#a09070;}\n\n    /* \u2500\u2500 Drag states \u2500\u2500 */\n    .leaf-todo.is-dragging{opacity:.3;}\n    .leaf-todo.drop-before{border-top:2.5px solid var(--lc,#27ae60);border-radius:4px 4px 8px 8px;}\n    .leaf-todo.drop-after{ border-bottom:2.5px solid var(--lc,#27ae60);border-radius:8px 8px 4px 4px;}\n    /* \u2500\u2500 Auth overlay \u2500\u2500 */\n    #auth-overlay{\n      position:fixed;inset:0;z-index:1000;background:#1e120a;\n      display:flex;flex-direction:column;align-items:center;justify-content:center;\n    }\n    #auth-overlay.hidden{display:none;}\n    #auth-card{\n      background:#fdf8ee;border-radius:24px;padding:36px 32px 32px;\n      width:min(360px,90vw);text-align:center;\n      box-shadow:0 12px 48px rgba(0,0,0,.4);\n    }\n    #auth-logo{font-size:52px;margin-bottom:12px;}\n    #auth-card h1{font-size:24px;font-weight:800;color:#2c1a08;margin-bottom:6px;}\n    #auth-card p{font-size:13px;color:#9a7850;line-height:1.6;margin-bottom:28px;}\n    #auth-google-btn{\n      display:flex;align-items:center;justify-content:center;gap:10px;\n      width:100%;padding:13px 20px;background:white;\n      border:2px solid #e8dfc8;border-radius:14px;cursor:pointer;\n      font-size:15px;font-weight:600;color:#2c1a08;font-family:inherit;\n      transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.06);\n    }\n    #auth-google-btn:hover{background:#f5f0e8;border-color:#c8b48a;transform:translateY(-1px);}\n    #auth-google-btn svg{width:20px;height:20px;flex-shrink:0;}\n    #auth-error{margin-top:14px;font-size:12px;color:#c0392b;min-height:18px;}\n    #auth-guest-btn{\n      margin-top:14px;background:none;border:none;font-size:12px;\n      color:#b09860;cursor:pointer;font-family:inherit;text-decoration:underline;\n    }\n    #auth-guest-btn:hover{color:#8a6030;}\n    /* \u2500\u2500 User button \u2500\u2500 */\n    #user-btn{\n      display:none;align-items:center;gap:6px;\n      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);\n      border-radius:20px;padding:4px 10px 4px 5px;\n      cursor:pointer;transition:background .12s;flex-shrink:0;\n    }\n    #user-btn.visible{display:flex;}\n    #user-btn:hover{background:rgba(255,255,255,.15);}\n    #user-avatar{\n      width:26px;height:26px;border-radius:50%;background:#5c3318;\n      display:flex;align-items:center;justify-content:center;\n      font-size:12px;font-weight:700;color:#f0dfc0;overflow:hidden;flex-shrink:0;\n    }\n    #user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}\n    #user-name{font-size:11px;color:rgba(255,255,255,.7);\n      max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}\n    /* \u2500\u2500 Sync dot \u2500\u2500 */\n    #sync-dot{\n      width:7px;height:7px;border-radius:50%;background:#27ae60;\n      flex-shrink:0;transition:background .3s;display:none;\n    }\n    #sync-dot.visible{display:block;}\n    #sync-dot.syncing{background:#f39c12;animation:pulse .8s infinite;}\n    #sync-dot.error{background:#e74c3c;}\n    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}\n  </style>\n  <!-- Firebase SDK -->\n  <script type=\"module\">\n    import { initializeApp }\n      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';\n    import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onAuthStateChanged }\n      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';\n    import { getFirestore, doc, getDoc, setDoc }\n      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';\n\n// For Firebase JS SDK v7.20.0 and later, measurementId is optional\nconst firebaseConfig = {\n  apiKey: \"AIzaSyB8Nat2QkpF2ygOeP3JTQFR0qtR3vw0czA\",\n  authDomain: \"treelist-61de1.firebaseapp.com\",\n  projectId: \"treelist-61de1\",\n  storageBucket: \"treelist-61de1.firebasestorage.app\",\n  messagingSenderId: \"977928737489\",\n  appId: \"1:977928737489:web:53279e1461149dfa566bf0\",\n  measurementId: \"G-X3X569CBK4\"\n};\n    const fbApp    = initializeApp(firebaseConfig);\n    const auth     = getAuth(fbApp);\n    const db       = getFirestore(fbApp);\n    const provider = new GoogleAuthProvider();\n   window._fb = { auth, db, provider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc };\n    document.dispatchEvent(new Event('fb-ready'));\n  </script>\n</head>\n<body>\n<div id=\"auth-overlay\">\n  <div id=\"auth-card\">\n    <div id=\"auth-logo\">\ud83c\udf33</div>\n    <h1>TreeList</h1>\n    <p>Organise your life as a living tree.<br>Sign in to save your data across devices.</p>\n    <button id=\"auth-google-btn\">\n      <svg viewBox=\"0 0 48 48\"><path fill=\"#EA4335\" d=\"M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.7 0 6.7 5.4 2.9 13.3l7.8 6C12.5 13 17.8 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z\"/><path fill=\"#FBBC05\" d=\"M10.7 28.7A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l8.1-6z\"/><path fill=\"#34A853\" d=\"M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.2 0-11.5-4.2-13.4-9.8l-8 6.2C6.6 42.5 14.7 48 24 48z\"/></svg>\n      Continue with Google\n    </button>\n    <div id=\"auth-error\"></div>\n    <button id=\"auth-guest-btn\">Continue without account</button>\n  </div>\n</div>\n<div id=\"app\">\n  <div id=\"topbar\">\n    <button id=\"menu-btn\">\u2630</button>\n    <h1>\ud83c\udf33 TreeList</h1>\n    <span id=\"topbar-section-name\"></span>\n    <div id=\"sync-dot\" title=\"Synced\"></div>\n    <div id=\"user-btn\">\n      <div id=\"user-avatar\"><span id=\"user-initial\">?</span></div>\n      <span id=\"user-name\"></span>\n    </div>\n  </div>\n  <div id=\"body\">\n    <div id=\"sidebar\">\n      <div id=\"sidebar-hdr\">\n        <span>My Trees</span>\n        <button id=\"add-sec-btn\" title=\"New tree\">+</button>\n      </div>\n      <div id=\"vb-entry\">\n        <span id=\"vb-entry-icon\">\u2726</span>\n        <span id=\"vb-entry-label\">Vision Board</span>\n        <span id=\"vb-entry-count\">0</span>\n      </div>\n      <div class=\"sidebar-divider-line\"></div>\n      <div id=\"sec-list\"></div>\n    </div>\n    <div id=\"main\" id=\"main-scroll\">\n      <div id=\"main-content\"></div>\n    </div>\n  </div>\n</div>\n<button id=\"add-leaf-btn\">\ud83c\udf43 New Leaf</button>\n<button id=\"add-kw-fab\">\u2726 New Keyword</button>\n\n<!-- Keyword editor panel -->\n<div id=\"kw-panel\">\n  <h3>\ud83c\udf3f Trunk keywords</h3>\n  <div id=\"kw-chips\"></div>\n  <div id=\"kw-inp-row\">\n    <input id=\"kw-inp\" type=\"text\" placeholder=\"Add keyword\u2026\" autocomplete=\"off\" maxlength=\"18\"/>\n    <button id=\"kw-add-btn\">+</button>\n  </div>\n  <button id=\"kw-close\">Done</button>\n</div>\n\n<script>\n(function(){\n\n/* \u2500\u2500 Colors \u2500\u2500 */\nconst SEC_COLORS = ['#3d8b37','#c0392b','#d4880a','#2471a3','#7d3c98','#0e7a6b','#b03a6b','#1a5c8a'];\n\nfunction lighten(hex, amt) {\n  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);\n  return `rgb(${Math.round(r+(255-r)*amt)},${Math.round(g+(255-g)*amt)},${Math.round(b+(255-b)*amt)})`;\n}\nfunction darken(hex, amt) {\n  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);\n  return `rgb(${Math.round(r*(1-amt))},${Math.round(g*(1-amt))},${Math.round(b*(1-amt))})`;\n}\n\nlet state = { sections:[], activeId:null, nextId:1, activeView:'tree', visionBoard:{ keywords:[] } };\n\n/* \u2500\u2500 Storage \u2500\u2500 Firestore \u2192 Capacitor Preferences \u2192 localStorage \u2500\u2500 */\nconst STORE_KEY = 'treelist_v1';\nlet   currentUser = null;\n\nfunction setSyncDot(st) {\n  const dot = document.getElementById('sync-dot');\n  if (!dot) return;\n  dot.className = currentUser ? `visible ${st}` : '';\n}\n\nasync function firestoreGet(uid) {\n  try {\n    const { db, doc, getDoc } = window._fb;\n    const snap = await getDoc(doc(db, 'users', uid, 'data', 'state'));\n    return snap.exists() ? JSON.stringify(snap.data()) : null;\n  } catch(e) { console.warn('Firestore get failed', e); return null; }\n}\n\nasync function firestoreSet(uid, value) {\n  const { db, doc, setDoc } = window._fb;\n  await setDoc(doc(db, 'users', uid, 'data', 'state'), JSON.parse(value));\n}\n\nasync function storageGet() {\n  if (currentUser && window._fb) return firestoreGet(currentUser.uid);\n  try {\n    if (window.Capacitor?.Plugins?.Preferences) {\n      const { value } = await window.Capacitor.Plugins.Preferences.get({ key: STORE_KEY });\n      return value;\n    }\n  } catch(e) {}\n  return localStorage.getItem(STORE_KEY);\n}\n\nasync function storageSet(value) {\n  if (currentUser && window._fb) {\n    setSyncDot('syncing');\n    try {\n      await firestoreSet(currentUser.uid, value);\n      setSyncDot('');\n    } catch(e) {\n      setSyncDot('error');\n      localStorage.setItem(STORE_KEY, value);\n    }\n    return;\n  }\n  try {\n    if (window.Capacitor?.Plugins?.Preferences) {\n      await window.Capacitor.Plugins.Preferences.set({ key: STORE_KEY, value });\n      return;\n    }\n  } catch(e) {}\n  localStorage.setItem(STORE_KEY, value);\n}\n\nasync function pinLeafToWidget(leafId) {\n  state.pinnedLeafId = (state.pinnedLeafId === leafId) ? null : leafId;\n  save();\n  const val = state.pinnedLeafId !== null ? String(state.pinnedLeafId) : '';\n  try {\n    if (window.Capacitor?.Plugins?.Preferences)\n      await window.Capacitor.Plugins.Preferences.set({ key: 'treelist_pinned_leaf', value: val });\n    else localStorage.setItem('treelist_pinned_leaf', val);\n  } catch(e) {}\n}\n\nfunction save() {\n  storageSet(JSON.stringify(state)).catch(e => console.warn('Save failed', e));\n}\n\nfunction seed() {\n  function mkSec(name, color, leaves) {\n    const s = { id: state.nextId++, name, color, leaves: [] };\n    leaves.forEach(l => {\n      const leaf = { id: state.nextId++, name: l.name, todos: [] };\n      (l.todos||[]).forEach(t => leaf.todos.push({id:state.nextId++, text:t, done:false}));\n      s.leaves.push(leaf);\n    });\n    state.sections.push(s); return s;\n  }\n  const s1 = mkSec('Work', '#2471a3', [\n    { name:'This week',   todos:['Finish project report','Team standup call','Review PRs'] },\n    { name:'In progress', todos:['Refactor auth module','Update staging env'] },\n    { name:'Follow-ups',  todos:['Email client re: timeline','Chase invoice #204'] },\n  ]);\n  s1.keywords = ['Focus','Deliver','Grow'];\n  mkSec('Personal', '#3d8b37', [\n    { name:'Health',   todos:['Book dentist appointment','Morning run 3\u00d7/wk'] },\n    { name:'Home',     todos:['Fix leaking tap','Order new shelf','Tidy garage'] },\n    { name:'Finance',  todos:['Pay insurance','Review subscriptions'] },\n  ]).keywords = ['Balance','Peace','Thrive'];\n  mkSec('Projects', '#7d3c98', [\n    { name:'Research',  todos:['Read Atomic Habits ch.4','Watch design talk'] },\n    { name:'Build',     todos:['Prototype v2 UI','Write README'] },\n  ]).keywords = ['Create','Explore'];\n  state.activeId = s1.id;\n  state.visionBoard = { keywords: [\n    { id: state.nextId++, title:'Health', color:'#27ae60', content:'Move every day. Sleep 8 hours. Eat whole foods. Energy is everything.' },\n    { id: state.nextId++, title:'Growth', color:'#2471a3', content:'Read daily. Embrace discomfort. Every mistake is a lesson.' },\n    { id: state.nextId++, title:'Freedom', color:'#7d3c98', content:'Build systems that work without me. Time over money.' },\n    { id: state.nextId++, title:'Creativity', color:'#d4880a', content:'Make something every week. Share it even when it feels unfinished.' },\n  ]};\n}\n\nfunction activeSec() { return state.sections.find(s=>s.id===state.activeId)||null; }\n\n/* \u2500\u2500 Sidebar \u2500\u2500 */\nconst secListEl  = document.getElementById('sec-list');\nconst topSecName = document.getElementById('topbar-section-name');\nconst vbEntry    = document.getElementById('vb-entry');\nconst vbCount    = document.getElementById('vb-entry-count');\nconst addKwFab   = document.getElementById('add-kw-fab');\n\nfunction renderSidebar() {\n  vbCount.textContent = state.visionBoard.keywords.length;\n  vbEntry.classList.toggle('active', state.activeView === 'vision');\n\n  secListEl.innerHTML = '';\n  state.sections.forEach(sec => {\n    const total = sec.leaves.reduce((n,l)=>n+l.todos.filter(t=>!t.done).length,0);\n    const el = document.createElement('div');\n    el.className = 'sec-item' + (sec.id===state.activeId && state.activeView==='tree' ? ' active':'');\n    el.dataset.id = sec.id;\n    el.innerHTML = `\n      <div class=\"sec-dot\" style=\"background:${sec.color}\"></div>\n      <div class=\"sec-label\">${esc(sec.name)}</div>\n      ${total>0?`<div class=\"sec-count\">${total}</div>`:''}\n      <div class=\"sec-acts\">\n        <button class=\"sec-btn\" data-a=\"ren\">\u270e</button>\n        <button class=\"sec-btn\" data-a=\"del\">\u00d7</button>\n      </div>`;\n    el.addEventListener('click', e => {\n      if (e.target.closest('.sec-acts')) return;\n      state.activeId = sec.id; state.activeView = 'tree'; save(); render();\n    });\n    el.querySelector('[data-a=\"ren\"]').addEventListener('click', e => {\n      e.stopPropagation(); startRenameSec(sec.id, el);\n    });\n    el.querySelector('[data-a=\"del\"]').addEventListener('click', e => {\n      e.stopPropagation();\n      const leafCount = sec.leaves.reduce((n,l)=>n+l.todos.length,0);\n      if (leafCount && !confirm(`Delete \"${sec.name}\"? It has ${sec.leaves.length} leaf/leaves.`)) return;\n      state.sections = state.sections.filter(s=>s.id!==sec.id);\n      if (state.activeId===sec.id) state.activeId = state.sections[0]?.id||null;\n      save(); render();\n    });\n    secListEl.appendChild(el);\n  });\n}\n\nfunction startRenameSec(id, el) {\n  const sec = state.sections.find(s=>s.id===id);\n  const lbl = el.querySelector('.sec-label');\n  const inp = document.createElement('input');\n  inp.className = 'sec-inp'; inp.value = sec.name;\n  lbl.replaceWith(inp); inp.focus(); inp.select();\n  const done = () => { const v=inp.value.trim(); if(v) sec.name=v; save(); renderSidebar(); };\n  inp.addEventListener('blur', done);\n  inp.addEventListener('keydown', e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){inp.value=sec.name;inp.blur();} });\n}\n\n/* \u2500\u2500 Vision board entry click \u2500\u2500 */\nvbEntry.addEventListener('click', () => {\n  state.activeView = 'vision'; save(); render();\n});\n\n/* \u2500\u2500 Main renderer \u2500\u2500 */\nconst mainContent = document.getElementById('main-content');\nconst addLeafBtn  = document.getElementById('add-leaf-btn');\n\nfunction render() {\n  renderSidebar();\n  if (state.activeView === 'vision') {\n    topSecName.textContent = 'Vision Board';\n    addLeafBtn.style.display = 'none';\n    addKwFab.style.display   = 'block';\n    renderVisionBoard();\n    return;\n  }\n  addKwFab.style.display = 'none';\n  const sec = activeSec();\n  topSecName.textContent = sec ? sec.name : '';\n  addLeafBtn.style.display = sec ? 'block' : 'none';\n  if (!sec) {\n    mainContent.innerHTML = `\n      <div id=\"empty-msg\">\n        <div class=\"ico\">\ud83c\udf31</div>\n        <p>Select a tree from the sidebar<br>or tap <strong>+</strong> to plant a new one.</p>\n      </div>`;\n    return;\n  }\n  renderTree(sec);\n}\n\n/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n   VISION BOARD RENDERER\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */\nfunction renderVisionBoard() {\n  const vb = state.visionBoard;\n  mainContent.innerHTML = `\n    <div id=\"vb-outer\">\n      <div id=\"vb-header\">\n        <h2>\u2726 Vision Board</h2>\n        <p>Your intentions and ideas \u2014 tap a keyword to explore it</p>\n      </div>\n      <div id=\"vb-grid\"></div>\n    </div>`;\n\n  const grid = document.getElementById('vb-grid');\n\n  if (!vb.keywords.length) {\n    grid.innerHTML = `<div id=\"vb-empty\" style=\"grid-column:1/-1;\">\n      <div class=\"ico\">\ud83c\udf1f</div>\n      <p>Add your first keyword to start capturing your vision.<br>Each keyword can hold notes, intentions, or ideas.</p>\n    </div>`;\n    return;\n  }\n\n  vb.keywords.forEach(kw => {\n    const vc      = kw.color || '#d4880a';\n    const vcLight = lighten(vc, 0.88);\n    const vcDark  = darken(vc, 0.35);\n\n    const card = document.createElement('div');\n    card.className = 'vb-card';\n    card.style.cssText = `--vc:${vc};--vc-light:${vcLight};--vc-dark:${vcDark}`;\n\n    card.innerHTML = `\n      <div class=\"vb-card-head\">\n        <span class=\"vb-card-icon\">\u2726</span>\n        <span class=\"vb-card-title\">${esc(kw.title)}</span>\n        <button class=\"vb-card-btn\" data-act=\"ren\" title=\"Rename\">\u270e</button>\n        <button class=\"vb-card-btn danger\" data-act=\"del\" title=\"Delete\">\u00d7</button>\n      </div>\n      <div class=\"vb-card-body\">\n        <textarea class=\"vb-content\" placeholder=\"Add notes, intentions, ideas\u2026\" rows=\"4\">${esc(kw.content||'')}</textarea>\n        <button class=\"vb-plant-btn\" data-act=\"plant\">\ud83c\udf31 Plant as Tree</button>\n      </div>`;\n\n    // Auto-resize textarea\n    const ta = card.querySelector('.vb-content');\n    const resize = () => { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; };\n    ta.addEventListener('input', () => { kw.content = ta.value; save(); resize(); });\n    setTimeout(resize, 10);\n\n    // Rename\n    const titleEl = card.querySelector('.vb-card-title');\n    card.querySelector('[data-act=\"ren\"]').addEventListener('click', () => startRenameKw(kw, titleEl));\n    titleEl.addEventListener('click', () => startRenameKw(kw, titleEl));\n\n    // Delete\n    card.querySelector('[data-act=\"del\"]').addEventListener('click', () => {\n      if (!confirm(`Remove \"${kw.title}\" from the vision board?`)) return;\n      state.visionBoard.keywords = state.visionBoard.keywords.filter(k=>k.id!==kw.id);\n      save(); renderVisionBoard(); renderSidebar();\n    });\n\n    // Plant as tree\n    card.querySelector('[data-act=\"plant\"]').addEventListener('click', () => {\n      const exists = state.sections.find(s=>s.name.toLowerCase()===kw.title.toLowerCase());\n      if (exists) {\n        state.activeId = exists.id; state.activeView = 'tree'; save(); render(); return;\n      }\n      const color = kw.color || SEC_COLORS[state.sections.length % SEC_COLORS.length];\n      const sec = { id:state.nextId++, name:kw.title, color, leaves:[], keywords:[] };\n      state.sections.push(sec);\n      state.activeId = sec.id; state.activeView = 'tree';\n      save(); render();\n    });\n\n    grid.appendChild(card);\n  });\n}\n\nfunction startRenameKw(kw, titleEl) {\n  const inp = document.createElement('input');\n  inp.className = 'vb-card-title-inp'; inp.value = kw.title;\n  inp.style.cssText = `--vc-dark:${darken(kw.color||'#d4880a',.35)}`;\n  titleEl.replaceWith(inp); inp.focus(); inp.select();\n  const done = () => {\n    const v = inp.value.trim(); if(v) kw.title = v;\n    save(); renderVisionBoard();\n  };\n  inp.addEventListener('blur', done);\n  inp.addEventListener('keydown', e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){inp.value=kw.title;inp.blur();} });\n}\n\n/* \u2500\u2500 Vision board FAB \u2500\u2500 */\naddKwFab.addEventListener('click', () => {\n  const color = SEC_COLORS[state.visionBoard.keywords.length % SEC_COLORS.length];\n  const kw = { id: state.nextId++, title: 'New keyword', color, content: '' };\n  state.visionBoard.keywords.push(kw);\n  save(); renderVisionBoard(); renderSidebar();\n  // Focus the new card title\n  setTimeout(() => {\n    const cards = document.querySelectorAll('.vb-card');\n    const last  = cards[cards.length-1];\n    if (last) {\n      last.scrollIntoView({ behavior:'smooth', block:'center' });\n      setTimeout(() => {\n        const t = last.querySelector('.vb-card-title');\n        if (t) startRenameKw(kw, t);\n      }, 160);\n    }\n  }, 50);\n});\n\nfunction renderTree(sec) {\n  mainContent.innerHTML = `\n    <div id=\"tree-outer\">\n      <svg id=\"tree-svg\"></svg>\n      <div id=\"tree-title\">\n        <h2>${esc(sec.name)}</h2>\n        <p>${sec.leaves.length} leaf/leaves \u00b7 ${sec.leaves.reduce((n,l)=>n+l.todos.filter(t=>!t.done).length,0)} tasks remaining</p>\n      </div>\n      <div id=\"leaves-wrap\"></div>\n      <div id=\"tree-ground\"></div>\n    </div>`;\n\n  const wrap = document.getElementById('leaves-wrap');\n  sec.leaves.forEach((leaf, i) => {\n    const isLeft = i % 2 === 0;\n    const row = document.createElement('div');\n    row.className = 'leaf-row ' + (isLeft ? 'left' : 'right');\n    row.dataset.lid = leaf.id;\n\n    const lc      = sec.color;\n    const lcLight = lighten(lc, 0.88);\n    const lcDark  = darken(lc, 0.35);\n\n    const card = document.createElement('div');\n    card.className = 'leaf-card';\n    card.dataset.lid = leaf.id;\n    card.style.cssText = `--lc:${lc};--lc-light:${lcLight};--lc-dark:${lcDark}`;\n\n    const pending = leaf.todos.filter(t=>!t.done).length;\n    const isPinned = state.pinnedLeafId === leaf.id;\n\n    card.innerHTML = `\n      <div class=\"leaf-head\">\n        <span class=\"leaf-head-icon\">\ud83c\udf43</span>\n        <span class=\"leaf-head-title\">${esc(leaf.name)}</span>\n        ${pending>0?`<span class=\"leaf-head-count\">${pending}</span>`:''}\n        <button class=\"leaf-pin-btn${isPinned?' pinned':''}\" title=\"${isPinned?'Pinned to widget':'Pin to widget'}\">\ud83d\udccc</button>\n        <button class=\"leaf-rename-btn\" title=\"Rename leaf\">\u270e</button>\n        <button class=\"leaf-del-btn\" title=\"Remove leaf\">\u00d7</button>\n      </div>\n      <div class=\"leaf-body\"></div>`;\n\n    // Rename \u2014 single tap on \u270e button OR the title itself\n    const titleEl  = card.querySelector('.leaf-head-title');\n    const renameBtn = card.querySelector('.leaf-rename-btn');\n    const doRename = () => startRenameLeaf(leaf, titleEl, sec);\n    titleEl.addEventListener('click', doRename);\n    renameBtn.addEventListener('click', doRename);\n\n    // Pin to widget\n    card.querySelector('.leaf-pin-btn').addEventListener('click', () => {\n      pinLeafToWidget(leaf.id);\n      renderTree(sec); // re-render so only one pin shows active\n    });\n\n    // Delete leaf\n    card.querySelector('.leaf-del-btn').addEventListener('click', () => {\n      if (leaf.todos.length && !confirm(`Remove leaf \"${leaf.name}\"?`)) return;\n      sec.leaves = sec.leaves.filter(l=>l.id!==leaf.id);\n      save(); renderTree(sec); renderSidebar(); setTimeout(drawTreeSVG, 50);\n    });\n\n    // Body: todos + add row\n    renderLeafBody(card.querySelector('.leaf-body'), leaf, sec);\n\n    const leftSlot  = document.createElement('div');\n    leftSlot.className = 'leaf-slot ' + (isLeft ? 'left' : 'empty');\n    const trunkGap  = document.createElement('div');\n    trunkGap.className = 'trunk-gap';\n    const rightSlot = document.createElement('div');\n    rightSlot.className = 'leaf-slot ' + (!isLeft ? 'right' : 'empty');\n\n    if (isLeft)  leftSlot.appendChild(card);\n    else         rightSlot.appendChild(card);\n\n    row.appendChild(leftSlot);\n    row.appendChild(trunkGap);\n    row.appendChild(rightSlot);\n    wrap.appendChild(row);\n  });\n\n  if (sec.leaves.length === 0) {\n    wrap.innerHTML = `<div style=\"text-align:center;padding:40px 20px;color:#b0985a;font-size:13px;position:relative;z-index:2;\">\n      Tap <strong>\ud83c\udf43 New Leaf</strong> to add your first task group</div>`;\n  }\n\n  setTimeout(drawTreeSVG, 60);\n}\n\nfunction renderLeafBody(bodyEl, leaf, sec) {\n  bodyEl.innerHTML = '';\n\n  /* \u2500\u2500 Per-body drag state \u2500\u2500 */\n  let dragId = null;\n\n  function getTodoRows() { return [...bodyEl.querySelectorAll('.leaf-todo')]; }\n\n  function clearIndicators() {\n    getTodoRows().forEach(r => r.classList.remove('drop-before','drop-after'));\n  }\n\n  function commitDrop(targetRow, position) {\n    if (!dragId) return;\n    const fromIdx = leaf.todos.findIndex(t=>t.id===dragId);\n    if (fromIdx===-1) return;\n    const targetId = parseInt(targetRow.dataset.tid);\n    let toIdx = leaf.todos.findIndex(t=>t.id===targetId);\n    if (toIdx===-1 || fromIdx===toIdx) return;\n    const [moved] = leaf.todos.splice(fromIdx, 1);\n    toIdx = leaf.todos.findIndex(t=>t.id===targetId);\n    const insertAt = position==='before' ? toIdx : toIdx+1;\n    leaf.todos.splice(insertAt, 0, moved);\n    save();\n    dragId = null;\n    renderLeafBody(bodyEl, leaf, sec);\n  }\n\n  leaf.todos.forEach(todo => {\n    const row = document.createElement('div');\n    row.className = 'leaf-todo';\n    row.dataset.tid = todo.id;\n    // propagate CSS var for drop indicators\n    row.style.cssText = `--lc:${sec.color}`;\n\n    /* Checkbox */\n    const chk = document.createElement('div');\n    chk.className = 'leaf-chk' + (todo.done?' done':'');\n    if (todo.done) chk.style.background = sec.color;\n    chk.addEventListener('click', () => {\n      todo.done = !todo.done; save();\n      renderLeafBody(bodyEl, leaf, sec);\n      const card = bodyEl.closest('.leaf-card');\n      const headCount = card.querySelector('.leaf-head-count');\n      const pending = leaf.todos.filter(t=>!t.done).length;\n      if (headCount) headCount.textContent = pending || '';\n      renderSidebar();\n      const treeTitleP = document.querySelector('#tree-title p');\n      if (treeTitleP) {\n        const s2 = activeSec();\n        if (s2) treeTitleP.textContent = `${s2.leaves.length} leaf/leaves \u00b7 ${s2.leaves.reduce((n,l)=>n+l.todos.filter(t=>!t.done).length,0)} tasks remaining`;\n      }\n    });\n\n    /* Text */\n    const txt = document.createElement('div');\n    txt.className = 'leaf-todo-txt' + (todo.done?' done':'');\n    txt.textContent = todo.text;\n    // Double-tap or dblclick to edit\n    let taps=0, ttmr=null;\n    txt.addEventListener('click', () => {\n      taps++; if(taps===1) ttmr=setTimeout(()=>taps=0,350);\n      if(taps>=2){clearTimeout(ttmr);taps=0;startEditTodo(txt,todo,leaf,sec,bodyEl);}\n    });\n    txt.addEventListener('dblclick', () => startEditTodo(txt,todo,leaf,sec,bodyEl));\n\n    /* Delete */\n    const del = document.createElement('button');\n    del.className = 'leaf-todo-del'; del.textContent = '\u00d7';\n    del.addEventListener('click', () => {\n      leaf.todos = leaf.todos.filter(t=>t.id!==todo.id);\n      save(); renderLeafBody(bodyEl, leaf, sec); renderSidebar();\n    });\n\n    /* Drag handle */\n    const handle = document.createElement('div');\n    handle.className = 'leaf-drag-handle';\n    handle.textContent = '\u283f';\n    handle.title = 'Drag to reorder';\n\n    function onDragStart(e) {\n      e.stopPropagation();\n      if (e.cancelable) e.preventDefault();\n      dragId = todo.id;\n      row.classList.add('is-dragging');\n\n      function getClientY(ev) { return ev.touches ? ev.touches[0].clientY : ev.clientY; }\n\n      function onMove(ev) {\n        if (ev.cancelable) ev.preventDefault();\n        clearIndicators();\n        const cy = getClientY(ev);\n        const rows = getTodoRows();\n        for (const r of rows) {\n          if (parseInt(r.dataset.tid) === dragId) continue;\n          const rect = r.getBoundingClientRect();\n          const mid  = rect.top + rect.height / 2;\n          if (cy < rect.bottom && cy >= rect.top) {\n            r.classList.add(cy < mid ? 'drop-before' : 'drop-after');\n            break;\n          }\n        }\n      }\n\n      function onEnd(ev) {\n        document.removeEventListener('mousemove', onMove);\n        document.removeEventListener('mouseup',   onEnd);\n        document.removeEventListener('touchmove', onMove);\n        document.removeEventListener('touchend',  onEnd);\n        row.classList.remove('is-dragging');\n        // find indicator row and commit\n        const before = bodyEl.querySelector('.drop-before');\n        const after  = bodyEl.querySelector('.drop-after');\n        clearIndicators();\n        if (before)     commitDrop(before, 'before');\n        else if (after) commitDrop(after,  'after');\n        else            dragId = null;\n      }\n\n      document.addEventListener('mousemove', onMove);\n      document.addEventListener('mouseup',   onEnd);\n      document.addEventListener('touchmove', onMove, { passive:false });\n      document.addEventListener('touchend',  onEnd);\n    }\n\n    handle.addEventListener('mousedown',  onDragStart);\n    handle.addEventListener('touchstart', onDragStart, { passive:false });\n\n    row.appendChild(handle);\n    row.appendChild(chk);\n    row.appendChild(txt);\n    row.appendChild(del);\n    bodyEl.appendChild(row);\n  });\n\n  /* Add row */\n  const addRow = document.createElement('div');\n  addRow.className = 'leaf-add-row';\n  addRow.style.setProperty('--lc', sec.color);\n  addRow.innerHTML = `\n    <input class=\"leaf-add-inp\" placeholder=\"Add item\u2026\" autocomplete=\"off\"/>\n    <button class=\"leaf-add-btn\">+</button>`;\n  const addInp = addRow.querySelector('.leaf-add-inp');\n  const addBtn = addRow.querySelector('.leaf-add-btn');\n  addBtn.style.background = sec.color;\n  const doAdd = () => {\n    const v = addInp.value.trim(); if (!v) return;\n    leaf.todos.push({id:state.nextId++, text:v, done:false});\n    addInp.value = ''; save();\n    renderLeafBody(bodyEl, leaf, sec);\n    const card    = bodyEl.closest('.leaf-card');\n    const headCount = card.querySelector('.leaf-head-count');\n    const headEl    = card.querySelector('.leaf-head');\n    const pending   = leaf.todos.filter(t=>!t.done).length;\n    if (headCount) { headCount.textContent = pending; }\n    else if (pending>0) {\n      const span = document.createElement('span');\n      span.className='leaf-head-count'; span.textContent=pending;\n      headEl.querySelector('.leaf-rename-btn').before(span);\n    }\n    renderSidebar();\n    setTimeout(()=>{const rows=bodyEl.querySelectorAll('.leaf-todo');rows[rows.length-1]?.scrollIntoView({block:'nearest'});},30);\n  };\n  addBtn.addEventListener('click', doAdd);\n  addInp.addEventListener('keydown', e => { if(e.key==='Enter') doAdd(); });\n  bodyEl.appendChild(addRow);\n}\n\nfunction startEditTodo(txtEl, todo, leaf, sec, bodyEl) {\n  const inp = document.createElement('input');\n  inp.className = 'leaf-todo-txt-inp'; inp.value = todo.text;\n  txtEl.replaceWith(inp); inp.focus(); inp.select();\n  const done = () => { const v=inp.value.trim(); if(v) todo.text=v; save(); renderLeafBody(bodyEl,leaf,sec); };\n  inp.addEventListener('blur', done);\n  inp.addEventListener('keydown', e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){inp.value=todo.text;inp.blur();} });\n}\n\nfunction startRenameLeaf(leaf, titleEl, sec) {\n  const inp = document.createElement('input');\n  inp.className = 'leaf-name-inp'; inp.value = leaf.name;\n  const lc = sec.color;\n  inp.style.cssText = `--lc-dark:${darken(lc,.35)}`;\n  titleEl.replaceWith(inp); inp.focus(); inp.select();\n  const done = () => { const v=inp.value.trim(); if(v) leaf.name=v; save(); renderTree(sec); setTimeout(drawTreeSVG,60); };\n  inp.addEventListener('blur', done);\n  inp.addEventListener('keydown', e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){inp.value=leaf.name;inp.blur();} });\n}\n\n/* \u2500\u2500 SVG Tree Drawing \u2500\u2500 */\nfunction drawTreeSVG() {\n  const outer  = document.getElementById('tree-outer');\n  const svg    = document.getElementById('tree-svg');\n  const titleEl= document.getElementById('tree-title');\n  const wrap   = document.getElementById('leaves-wrap');\n  if (!outer || !svg) return;\n\n  const W = outer.offsetWidth;\n  const H = outer.scrollHeight;\n  const cx = W / 2;\n\n  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);\n  svg.setAttribute('width', W);\n  svg.setAttribute('height', H);\n\n  const outerBCR = outer.getBoundingClientRect();\n\n  // Trunk extents\n  const trunkTop = titleEl ? (titleEl.getBoundingClientRect().bottom - outerBCR.top) + 4 : 60;\n  const trunkBot = H - 52;\n  const trunkW   = 48;\n  const mid      = trunkBot - trunkTop;\n\n  // Organic trunk bezier\n  const trunkD = `M ${cx} ${trunkTop}\n    C ${cx-7} ${trunkTop+mid*.2} ${cx+7} ${trunkTop+mid*.4}\n      ${cx} ${trunkTop+mid*.6}\n    C ${cx-5} ${trunkTop+mid*.75} ${cx+5} ${trunkTop+mid*.88}\n      ${cx} ${trunkBot}`;\n\n  // Branches \u2014 start from trunk edge, not centre\n  const sec = activeSec();\n  let branches = '';\n  if (sec && wrap) {\n    const trunkEdgeL = cx - trunkW / 2;\n    const trunkEdgeR = cx + trunkW / 2;\n    const rows = wrap.querySelectorAll('.leaf-row');\n    rows.forEach(row => {\n      const card = row.querySelector('.leaf-card');\n      if (!card) return;\n      const rowBCR  = row.getBoundingClientRect();\n      const cardBCR = card.getBoundingClientRect();\n      const brY     = rowBCR.top - outerBCR.top + rowBCR.height / 2;\n      const isLeft  = row.classList.contains('left');\n      const trunkEdge = isLeft ? trunkEdgeL : trunkEdgeR;\n      const cardEdge  = isLeft ? cardBCR.right - outerBCR.left : cardBCR.left - outerBCR.left;\n      const cp1x = isLeft ? trunkEdge - 16 : trunkEdge + 16;\n      const cp2x = isLeft ? cardEdge  + 12 : cardEdge  - 12;\n      branches += `<path d=\"M ${trunkEdge} ${brY} C ${cp1x} ${brY} ${cp2x} ${brY} ${cardEdge} ${brY}\"\n        fill=\"none\" stroke=\"#8b6030\" stroke-width=\"2.8\" stroke-linecap=\"round\"/>`;\n    });\n  }\n\n  // Keywords along trunk\n  let kwSVG = '';\n  if (sec && sec.keywords && sec.keywords.length) {\n    const kws = sec.keywords;\n    const slots = kws.length + 1;\n    kwSVG += `<defs><path id=\"trunk-kw-path\" d=\"${trunkD}\"/></defs>`;\n    kws.forEach((kw, i) => {\n      const offset = Math.round(8 + ((i + 1) / slots) * 82);\n      // alternate above/below trunk centreline, staying within the bark width\n      const dy = i % 2 === 0 ? -7 : 10;\n      kwSVG += `\n        <text font-size=\"13\" font-family=\"-apple-system,sans-serif\"\n              font-weight=\"800\" letter-spacing=\"0.08em\"\n              fill=\"#f5d48a\" opacity=\"0.95\">\n          <textPath href=\"#trunk-kw-path\" startOffset=\"${offset}%\" text-anchor=\"middle\">\n            <tspan dy=\"${dy}\">${escSVG(kw.toUpperCase())}</tspan>\n          </textPath>\n        </text>`;\n    });\n  }\n\n  // Roots\n  const rb = trunkBot;\n  const roots = `\n    <path d=\"M ${cx} ${rb} C ${cx-10} ${rb+10} ${cx-42} ${rb+18} ${cx-58} ${rb+36}\" fill=\"none\" stroke=\"#4a2e14\" stroke-width=\"16\" stroke-linecap=\"round\"/>\n    <path d=\"M ${cx} ${rb} C ${cx+10} ${rb+10} ${cx+42} ${rb+18} ${cx+58} ${rb+36}\" fill=\"none\" stroke=\"#4a2e14\" stroke-width=\"16\" stroke-linecap=\"round\"/>\n    <path d=\"M ${cx} ${rb+6} C ${cx-4} ${rb+16} ${cx-14} ${rb+28} ${cx-12} ${rb+42}\" fill=\"none\" stroke=\"#4a2e14\" stroke-width=\"10\" stroke-linecap=\"round\"/>\n    <path d=\"M ${cx} ${rb+6} C ${cx+4} ${rb+16} ${cx+14} ${rb+28} ${cx+12} ${rb+42}\" fill=\"none\" stroke=\"#4a2e14\" stroke-width=\"10\" stroke-linecap=\"round\"/>`;\n\n  const ground = `<ellipse cx=\"${cx}\" cy=\"${rb+44}\" rx=\"70\" ry=\"10\" fill=\"#c8a070\" opacity=\"0.35\"/>`;\n\n  // Wide invisible hit area on trunk for tap-to-edit\n  const trunkHit = `<path id=\"trunk-hit\" d=\"${trunkD}\" fill=\"none\" stroke=\"transparent\"\n    stroke-width=\"60\" stroke-linecap=\"round\" style=\"cursor:pointer;\"/>`;\n\n  svg.innerHTML = `\n    <path d=\"${trunkD}\" fill=\"none\" stroke=\"rgba(0,0,0,.08)\" stroke-width=\"${trunkW+6}\" stroke-linecap=\"round\"/>\n    <path d=\"${trunkD}\" fill=\"none\" stroke=\"#5c3318\" stroke-width=\"${trunkW}\" stroke-linecap=\"round\"/>\n    <path d=\"${trunkD}\" fill=\"none\" stroke=\"#8b5430\" stroke-width=\"${trunkW*.28}\" stroke-linecap=\"round\" opacity=\"0.5\"/>\n    ${kwSVG}\n    ${branches}\n    ${roots}\n    ${ground}\n    ${trunkHit}`;\n\n  // Bind trunk tap\n  const hitEl = svg.getElementById('trunk-hit');\n  if (hitEl) {\n    hitEl.addEventListener('click',  openKwPanel);\n    hitEl.addEventListener('touchend', e => { e.preventDefault(); openKwPanel(e); });\n  }\n}\n\n/* \u2500\u2500 Add leaf / section \u2500\u2500 */\naddLeafBtn.addEventListener('click', () => {\n  const sec = activeSec(); if (!sec) return;\n  const leaf = { id: state.nextId++, name: 'New leaf', todos: [] };\n  sec.leaves.push(leaf);\n  save(); renderTree(sec); renderSidebar();\n  setTimeout(() => {\n    // Auto-focus new leaf name\n    const cards = document.querySelectorAll('.leaf-card');\n    const lastCard = cards[cards.length-1];\n    if (lastCard) {\n      lastCard.scrollIntoView({ behavior:'smooth', block:'center' });\n      setTimeout(() => {\n        const titleEl = lastCard.querySelector('.leaf-head-title');\n        if (titleEl) startRenameLeaf(leaf, titleEl, sec);\n      }, 200);\n    }\n    drawTreeSVG();\n  }, 60);\n});\n\ndocument.getElementById('add-sec-btn').addEventListener('click', () => {\n  const color = SEC_COLORS[state.sections.length % SEC_COLORS.length];\n  const sec = { id: state.nextId++, name: 'New tree', color, leaves: [] };\n  state.sections.push(sec); state.activeId = sec.id;\n  save(); render();\n  setTimeout(() => {\n    const items = secListEl.querySelectorAll('.sec-item');\n    const last  = items[items.length-1];\n    if (last) startRenameSec(sec.id, last);\n  }, 40);\n});\n\n/* \u2500\u2500 Keyword panel \u2500\u2500 */\nconst kwPanel  = document.getElementById('kw-panel');\nconst kwChips  = document.getElementById('kw-chips');\nconst kwInp    = document.getElementById('kw-inp');\nconst kwAddBtn = document.getElementById('kw-add-btn');\nconst kwClose  = document.getElementById('kw-close');\n\nfunction openKwPanel(e) {\n  const sec = activeSec(); if (!sec) return;\n  // Position panel near trunk centre\n  const svg = document.getElementById('tree-svg');\n  const r   = svg ? svg.getBoundingClientRect() : {left:0,top:0,width:200};\n  const cx  = r.left + r.width / 2;\n  const panW = 220;\n  let left = cx - panW / 2;\n  if (left < 6) left = 6;\n  if (left + panW > window.innerWidth - 6) left = window.innerWidth - panW - 6;\n  kwPanel.style.left = left + 'px';\n  kwPanel.style.top  = Math.min(r.top + 80, window.innerHeight - 280) + 'px';\n  kwPanel.style.display = 'block';\n  renderKwChips(sec);\n  kwInp.value = '';\n  kwInp.focus();\n}\n\nfunction renderKwChips(sec) {\n  kwChips.innerHTML = '';\n  (sec.keywords||[]).forEach((kw, i) => {\n    const chip = document.createElement('div');\n    chip.className = 'kw-chip';\n    chip.innerHTML = `${esc(kw)}<button class=\"kw-chip-del\" title=\"Remove\">\u00d7</button>`;\n    chip.querySelector('.kw-chip-del').addEventListener('click', () => {\n      sec.keywords.splice(i, 1);\n      save(); renderKwChips(sec); drawTreeSVG();\n    });\n    kwChips.appendChild(chip);\n  });\n  if (!sec.keywords.length) {\n    kwChips.innerHTML = '<span style=\"font-size:11px;color:#4a3018;font-style:italic;\">No keywords yet</span>';\n  }\n}\n\nfunction addKeyword() {\n  const sec = activeSec(); if (!sec) return;\n  const v = kwInp.value.trim();\n  if (!v) return;\n  if (!sec.keywords) sec.keywords = [];\n  if (sec.keywords.length >= 6) return; // max 6 keywords on trunk\n  if (!sec.keywords.includes(v)) sec.keywords.push(v);\n  kwInp.value = '';\n  save(); renderKwChips(sec); drawTreeSVG();\n}\n\nkwAddBtn.addEventListener('click', addKeyword);\nkwInp.addEventListener('keydown', e => { if (e.key==='Enter') addKeyword(); });\nkwClose.addEventListener('click', () => kwPanel.style.display='none');\n\n// Close on outside click\ndocument.addEventListener('click', e => {\n  if (kwPanel.style.display==='block' && !e.target.closest('#kw-panel') && !e.target.closest('#trunk-hit')) {\n    kwPanel.style.display = 'none';\n  }\n});\n\n/* \u2500\u2500 Helpers \u2500\u2500 */\nfunction escSVG(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;'); }\n\n/* \u2500\u2500 Sidebar toggle \u2500\u2500 */\ndocument.getElementById('menu-btn').addEventListener('click', () => {\n  document.getElementById('sidebar').classList.toggle('collapsed');\n  setTimeout(drawTreeSVG, 240);\n});\n\n/* \u2500\u2500 Redraw SVG on resize \u2500\u2500 */\nwindow.addEventListener('resize', () => setTimeout(drawTreeSVG, 50));\ndocument.getElementById('main').addEventListener('scroll', drawTreeSVG);\n\n/* \u2500\u2500 Helpers \u2500\u2500 */\nfunction esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }\n\n/* \u2500\u2500 Auth UI \u2500\u2500 */\nfunction showAuthOverlay() { document.getElementById('auth-overlay').classList.remove('hidden'); }\nfunction hideAuthOverlay() { document.getElementById('auth-overlay').classList.add('hidden'); }\n\nfunction setUserUI(user) {\n  const btn = document.getElementById('user-btn');\n  const avatar = document.getElementById('user-avatar');\n  const name = document.getElementById('user-name');\n  if (user) {\n    btn.classList.add('visible');\n    name.textContent = user.displayName?.split(' ')[0] || 'You';\n    if (user.photoURL) {\n      avatar.innerHTML = `<img src=\"${user.photoURL}\" referrerpolicy=\"no-referrer\"/>`;\n    } else {\n      document.getElementById('user-initial').textContent =\n        (user.displayName || user.email || '?')[0].toUpperCase();\n    }\n  } else {\n    btn.classList.remove('visible');\n  }\n}\n\nfunction normaliseState() {\n  if (!state.activeId && state.sections.length) state.activeId = state.sections[0].id;\n  state.sections.forEach(s => { if (!s.keywords) s.keywords = []; });\n  if (!state.visionBoard)  state.visionBoard  = { keywords: [] };\n  if (!state.activeView)   state.activeView   = 'tree';\n  if (state.pinnedLeafId === undefined) state.pinnedLeafId = null;\n  state.visionBoard.keywords.forEach(k => { if (!k.content) k.content = ''; });\n}\n\nasync function bootAsGuest() {\n  hideAuthOverlay();\n  currentUser = null;\n  setUserUI(null);\n  const raw = await storageGet() || localStorage.getItem(STORE_KEY);\n  try { const s = JSON.parse(raw||'null'); if(s&&s.sections) state=s; else seed(); } catch(e) { seed(); }\n  normaliseState(); render();\n}\n\nasync function bootAsUser(user) {\n  hideAuthOverlay();\n  currentUser = user;\n  setUserUI(user);\n  setSyncDot('syncing');\n  const raw = await storageGet();\n  try { const s = JSON.parse(raw||'null'); if(s&&s.sections) state=s; else seed(); } catch(e) { seed(); }\n  normaliseState(); setSyncDot(''); render();\n}\n\nfunction initAuth() {\n  // \u2500\u2500 Sign in with Google popup \u2500\u2500\n  document.getElementById('auth-google-btn').addEventListener('click', async () => {\n    document.getElementById('auth-error').textContent = '';\n    try {\n      const { auth, provider, signInWithPopup } = window._fb;\n      const result = await signInWithPopup(auth, provider);\n      if (result?.user) {\n        localStorage.removeItem('treelist_guest_mode');\n        await bootAsUser(result.user);\n      }\n    } catch(e) {\n      if (e.code !== 'auth/popup-closed-by-user') {\n        document.getElementById('auth-error').textContent = 'Sign-in failed. Try again.';\n      }\n    }\n  });\n\n  // \u2500\u2500 Guest mode \u2500\u2500\n  document.getElementById('auth-guest-btn').addEventListener('click', () => {\n    localStorage.setItem('treelist_guest_mode', '1');\n    bootAsGuest();\n  });\n\n  // \u2500\u2500 Sign out \u2500\u2500\n  document.getElementById('user-btn').addEventListener('click', async () => {\n    if (!confirm('Sign out of TreeList?')) return;\n    const { auth, signOut } = window._fb;\n    await signOut(auth);\n    currentUser = null; setUserUI(null); setSyncDot('');\n    state = { sections:[], activeId:null, nextId:1, activeView:'tree', visionBoard:{ keywords:[] } };\n    showAuthOverlay();\n  });\n\n// \u2500\u2500 Watch auth state (handles page refresh / already signed in) \u2500\u2500\n  const { auth, onAuthStateChanged } = window._fb;\n  let booted = false;\n  onAuthStateChanged(auth, async user => {\n    if (booted) return;\n    booted = true;\n    if (user) {\n      localStorage.removeItem('treelist_guest_mode');\n      await bootAsUser(user);\n    } else {\n      localStorage.getItem('treelist_guest_mode') === '1'\n        ? await bootAsGuest()\n        : showAuthOverlay();\n    }\n  });\n}\n// Wait for Firebase SDK, fall back to guest if unavailable\nif (window._fb) { initAuth(); }\nelse {\n  document.addEventListener('fb-ready', initAuth, { once: true });\n  setTimeout(() => { if (!window._fb) bootAsGuest(); }, 4000);\n}\n})();\n</script>\n</body>\n</html>";
+
+  // Inject back pill into nav
+  var nav = document.querySelector('nav');
+  var backPill = document.createElement('button');
+  backPill.id = 'lf-back';
+  backPill.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg> Back to Watch';
+  backPill.style.cssText = 'display:none;align-items:center;gap:6px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 14px 6px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;';
+  backPill.addEventListener('mouseenter', function(){ this.style.background='rgba(255,255,255,0.14)'; this.style.color='#f0dfc0'; });
+  backPill.addEventListener('mouseleave', function(){ this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.6)'; });
+  var logo = nav.querySelector('.nav-logo');
+  nav.insertBefore(backPill, logo.nextSibling);
+
+  // Add app promo banner into main content area
+  var seriesFilter = document.querySelector('.series-filter');
+  if (seriesFilter) {
+    var promo = document.createElement('div');
+    promo.style.cssText = 'background:#1e120a;border-radius:16px;padding:36px 44px;display:flex;align-items:center;gap:40px;cursor:pointer;position:relative;overflow:hidden;margin-top:48px;';
+    promo.innerHTML = '<div style="flex:1;"><div style="font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#c4902a;margin-bottom:10px;">Now available</div><h2 style=\'font-family:Cormorant Garamond,Georgia,serif;font-size:30px;font-weight:400;color:#f0dfc0;line-height:1.15;margin-bottom:10px;\'>The Leafly app &mdash; <em style=\'font-weight:300;color:#e8b84b;\'>organise your world as a living tree</em></h2><p style=\'font-size:13px;color:rgba(240,223,192,0.5);line-height:1.6;max-width:400px;\'>Capture notes, build vision boards, track your productivity. Designed to mirror the way ideas actually grow.</p></div><div style=\'flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px;\'><button id=\'lf-promo-btn\' style=\'font-family:inherit;font-size:14px;font-weight:500;color:#1e120a;background:#f0dfc0;border:none;border-radius:10px;padding:14px 32px;cursor:pointer;white-space:nowrap;\'>Open the app</button><span style=\'font-size:11px;color:rgba(240,223,192,0.25);\'>No download needed &middot; runs in your browser</span></div>';
+    seriesFilter.parentNode.insertBefore(promo, seriesFilter);
+    promo.addEventListener('click', openApp);
+    document.getElementById('lf-promo-btn').addEventListener('click', function(e){ e.stopPropagation(); openApp(); });
+  }
+
+  var panel = document.getElementById('lf-app-panel');
+  var iframe = document.getElementById('lf-app-frame');
+  var appLoaded = false;
+
+  function openApp() {
+    if (!appLoaded) {
+      var blob = new Blob([appHTML], {type:'text/html'});
+      iframe.src = URL.createObjectURL(blob);
+      appLoaded = true;
+    }
+    panel.style.transform = 'translateX(0)';
+    document.body.style.overflow = 'hidden';
+    nav.style.background = '#1e120a';
+    nav.style.borderBottomColor = '#2d1a0d';
+    nav.querySelector('.nav-logo').style.color = '#f0dfc0';
+    document.querySelectorAll('.nav-links a').forEach(function(a){ a.style.color='rgba(255,255,255,0.4)'; a.classList.remove('active'); });
+    backPill.style.display = 'flex';
+    if(document.getElementById('nav-app-link')){ document.getElementById('nav-app-link').style.color='#f0dfc0'; document.getElementById('nav-app-link').style.fontWeight='500'; }
+  }
+
+  function closeApp() {
+    panel.style.transform = 'translateX(100%)';
+    document.body.style.overflow = '';
+    nav.style.background = '';
+    nav.style.borderBottomColor = '';
+    nav.querySelector('.nav-logo').style.color = '';
+    document.querySelectorAll('.nav-links a').forEach(function(a){ a.style.color=''; a.style.fontWeight=''; });
+    backPill.style.display = 'none';
+    document.querySelectorAll('.nav-links a').forEach(function(a){ a.classList.remove('active'); });
+    var watchLink = document.getElementById('nav-watch-link');
+    if(watchLink) watchLink.classList.add('active');
+  }
+
+  backPill.addEventListener('click', closeApp);
+
+  // Hook nav links
+  document.querySelectorAll('.nav-links a').forEach(function(a) {
+    if (a.textContent.trim() === 'App') {
+      a.id = 'nav-app-link';
+      a.addEventListener('click', function(e){ e.preventDefault(); openApp(); });
+    }
+    if (a.textContent.trim() === 'Watch') {
+      a.id = 'nav-watch-link';
+    }
+  });
+
+  // Hook Try Leafly button
+  var tryBtn = document.querySelector('.btn-primary');
+  if (tryBtn) tryBtn.addEventListener('click', openApp);
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.filter-tab').forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
